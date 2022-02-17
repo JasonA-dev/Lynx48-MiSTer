@@ -17,7 +17,8 @@ bool                  ScrollToBottom;
 ImVector<char*>       Items;
 static char* Strdup(const char* str) { size_t len = strlen(str) + 1; void* buf = malloc(len); IM_ASSERT(buf); return (char*)memcpy(buf, (const void*)str, len); }
 
-void DebugConsole::AddLog(const char* fmt, ...) IM_FMTARGS(2)
+//void DebugConsole::AddLog(const char* fmt, ...) IM_FMTARGS(2)
+void DebugConsole::AddLog(const char* fmt, ...) 
 {
 	// FIXME-OPT
 	char buf[1024];

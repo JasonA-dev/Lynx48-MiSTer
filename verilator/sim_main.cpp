@@ -136,7 +136,7 @@ int verilate() {
 #endif
 
 		// Output pixels on rising edge of pixel clock
-		if (clk_sys.IsRising() /*&& top->emu__DOT__ce_6*/) {
+		if (clk_sys.IsRising() && top->CE_PIXEL ) {
 			uint32_t colour = 0xFF000000 | top->VGA_B << 16 | top->VGA_G << 8 | top->VGA_R;
 			video.Clock(top->VGA_HB, top->VGA_VB, top->VGA_HS, top->VGA_VS, colour);
 		}

@@ -80,6 +80,8 @@ module emu (
 	output VGA_VS,
 	output VGA_HB,
 	output VGA_VB,
+
+	output CE_PIXEL,
 	
 	output	[15:0]	AUDIO_L,
 	output	[15:0]	AUDIO_R,
@@ -126,7 +128,7 @@ lynx48 lynx48
         .ioctl_index            (ioctl_index            ),
         .ioctl_wr                       (ioctl_wr                       ),
 
-        .ce_pix                         (ce_pix                         ),
+        .ce_pix                         (CE_PIXEL),
         .mode                           (mode                           )
 );
 
