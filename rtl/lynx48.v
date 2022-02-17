@@ -18,20 +18,20 @@ module lynx48
 	output wire      crtcDe,
 	output wire [8:0] rgb,
    	output wire      ce_pix,
-	output wire [10:0]audio,
-	input  wire      ear, 
+	output wire [15:0]audio,
+	input  wire      ear,
 	
 	// roms, cartridges, etc
 	input	wire [7:0]	ioctl_data,
 	input	wire [24:0]	ioctl_addr,
 	input	wire		ioctl_download,
 	input	wire		ioctl_wr,
-	input 	wire [15:0]	ioctl_index,
+	input 	wire [7:0]	ioctl_index,
 	
    	//
-	input  wire [1:0] ps2,
-	input  wire [5:0] joy_0,
-   	input  wire [5:0] joy_1,
+	input  wire [10:0] ps2,
+	input  wire [7:0] joy_0,
+   	input  wire [7:0] joy_1,
 	
 	// 
 	input  wire [1:0] mode //0: lynx48k, 1: lynx96k, 2: lynx96k with scorpio rom
@@ -50,7 +50,7 @@ wire ce600p = ~ce[0] & ~ce[1] &  ce[2];
 wire ce075p = ~ce[0] & ~ce[1] & ~ce[2] & ~ce[3] & ~ce[4] &  ce[5];
 
 reg[3:0] ce4 = 0;
-always @(negedge clock) if(ce400p) ce4 <= 1'd0; else ce4 <= ce4+1'd1;
+always @(negedge clock) if(ce400p) ce4 <= 4'd0; else ce4 <= ce4+4'd1;
 
 wire ce400p = ce4[0] &  ce4[1]          &  ce4[3];
 wire ce400n = ce4[0] & ~ce4[1] & ce4[2] & ~ce4[3];
@@ -66,6 +66,7 @@ wire[ 7:0] data_out;
 wire[15:0] a;
 wire mreq;
 wire iorq;
+wire wr;
 cpu Cpu
 (
 	.reset  (reset  ),
@@ -112,7 +113,7 @@ rom #(.AW(14), .FN("48K-1+2.hex")) Rom_48
 	.clock  (clock  ),
 	.ce     (ce400p   ),
 	.data_out     (romDo_48),
-	.a      (romA   )
+	.a      (romA[13:0]   )
 );
 
 rom #(.AW(15), .FN("96K-1+2+3.hex")) Rom_96
@@ -177,6 +178,8 @@ wire[13:0] vrbA1;
 wire[ 7:0] vrbDi2;
 wire[ 7:0] vrbDo2;
 wire[13:0] vrbA2;
+wire vrbWe2;
+
 
 dpr #(.AW(14)) Vrb
 (
@@ -196,6 +199,7 @@ wire[13:0] vggA1;
 wire[ 7:0] vggDi2;
 wire[ 7:0] vggDo2;
 wire[13:0] vggA2;
+wire vggWe2;
 
 dpr #(.AW(14)) Vgg
 (
@@ -244,6 +248,7 @@ wire[ 7:0] crtcDi = data_out;
 
 wire[13:0] crtcMa;
 wire[ 4:0] crtcRa;
+wire cursor;
 
 UM6845R Crtc
 (
@@ -278,6 +283,8 @@ wire [1:0] 		vduB;
 wire[3:0] keybRow = a[11:8];
 wire[7:0] keybDo;
 wire reset_kbd;
+wire cas;
+wire boot;
 keyboard Keyboard
 (
 	.clock  (clock  ),
