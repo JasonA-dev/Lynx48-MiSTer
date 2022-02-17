@@ -4,73 +4,14 @@ module keyboard
 (
 	input  wire      clock,
 	input  wire      ce,
-	input  wire[1:0] ps2,
+	input  wire[10:0] ps2,
 	output wire      reset,
 	output wire      boot,
 	output wire      cas,
 	input  wire[3:0] row,
 	output wire[7:0] data_out 
 );
-//-------------------------------------------------------------------------------------------------
 
-reg      ps2c;
-reg      ps2d;
-reg      ps2e;
-reg[7:0] ps2f;
-
-always @(posedge clock) if(ce)
-begin
-	ps2d <= ps2[1];
-	ps2e <= 1'b0;
-	ps2f <= { ps2[0], ps2f[7:1] };
-
-	if(ps2f == 8'hFF) ps2c <= 1'b1;
-	else if(ps2f == 8'h00)
-	begin
-		ps2c <= 1'b0;
-		if(ps2c) ps2e <= 1'b1;
-	end
-end
-
-//-------------------------------------------------------------------------------------------------
-
-reg parity;
-reg received;
-
-reg[8:0] data;
-reg[3:0] count;
-reg[7:0] scancode;
-
-always @(posedge clock) if(ce)
-begin
-	received <= 1'b0;
-
-	if(ps2e) begin
-		if(count == 4'd0) begin
-			parity <= 1'b0;
-			if(!ps2d) count <= count+4'd1;
-		end
-		else begin
-			if(count < 4'd10) begin
-				data <= { ps2d, data[8:1] };
-				count <= count+4'd1;
-				parity <= parity ^ ps2d;
-			end
-			else if(ps2d) begin
-				count <= 4'd0;
-				if(parity) begin
-					scancode <= data[7:0];
-					received <= 1'b1;
-				end
-			end
-			else count <= 0;
-		end
-	end
-end
-
-//-------------------------------------------------------------------------------------------------
-
-reg      pressed = 1'b0;
 
 reg      F8; // cas
 reg      F11; // boot
@@ -94,13 +35,15 @@ initial begin
 	key[9] = 8'hFF;
 end
 
-always @(posedge clock) if(ce)
-if(received)
-	if(scancode == 8'hF0) pressed <= 1'b1; // released
-	else
+reg ps2_clk_last;
+wire ps2_clk = ps2[10];
+wire pressed = ps2[9];
+wire [7:0] scancode = ps2[7:0];
+always @(posedge clock)
+begin
+	ps2_clk_last <= ps2_clk;
+	if(ps2_clk != ps2_clk_last)
 	begin
-		pressed <= 1'b0;
-
 		case(scancode)
 			8'h0A: F8        <= pressed; // F8
 			8'h78: F11       <= pressed; // F11
@@ -198,6 +141,7 @@ if(received)
 //			8'h00: key[9][7] <= pressed; // 
 		endcase
 	end
+end
 
 //-------------------------------------------------------------------------------------------------
 

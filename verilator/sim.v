@@ -100,12 +100,16 @@ assign VGA_R={video[8:6],video[8],4'b0};
 assign VGA_G={video[5:3],video[5],4'b0};
 assign VGA_B={video[2:0],video[2],4'b0};
 
+wire [1:0] mode = 2'b0;
+wire crtcDe;
+wire [1:0] ps2 = 2'b0;
+wire ear;
 
 lynx48 lynx48
 (
         .clock    (clk_sys),
         .reset_osd(~reset),
-        .led      (LED_USER),
+        .led      (),
 
         .hSync    (VGA_HS ),
         .vSync    (VGA_VS),
@@ -114,7 +118,7 @@ lynx48 lynx48
         .crtcDe   (crtcDe ),
         .rgb      (video  ),
 
-        .ps2      (ps2    ),
+        .ps2      (ps2_key    ),
         .joy_0    (~{1'b0,1'b0,joy_0[4],1'b0,joy_0[0],joy_0[1],joy_0[2],joy_0[3]} ),
         .joy_1    (~{1'b0,1'b0,joy_1[4],1'b0,joy_1[0],joy_1[1],joy_1[2],joy_1[3]} ),
 
