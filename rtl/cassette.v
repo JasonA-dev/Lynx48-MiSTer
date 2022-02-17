@@ -31,7 +31,7 @@ localparam SM_MYSTERYBYTE    = 11;
 // TAP
 reg	[7:0]	fileType;           // 'h42 == "B"
 reg	[15:0]	programLength;
-reg	[15:0]	loadPoint;
+reg	[15:0]	loadPoint = 'h694d;
 reg	[15:0]	execPoint;
 reg	[7:0]	checkDigit;
 reg	[7:0]	mysteryByte;
@@ -47,6 +47,7 @@ always @(posedge clk)
                 SM_INIT:
                 if(ioctl_dout == 'h22)
                 begin
+		    loadPoint <= 'h694d;
                     state <= SM_FIRSTQUOTE;
 
                     // Bankswitch to write 1
@@ -56,11 +57,15 @@ always @(posedge clk)
                 end
 
                 SM_FIRSTQUOTE:
+		begin
                 if(ioctl_dout == 'h22)
                     state <= SM_FILETYPE;
+                $display( "(state %x) quote: %c",state,ioctl_dout);
+		end
 
                 SM_FILETYPE:
                 begin
+                    $display( "(state %x) filetype: %c",state,ioctl_dout);
                     fileType <= ioctl_dout;
                     state <= SM_PROGRAMLO;
                 end
@@ -75,6 +80,8 @@ always @(posedge clk)
                 begin
                     programLength[15:8] <= ioctl_dout;
                     state <= SM_LOADPOINTLO;
+		    if (fileType=='h42)
+                    	state <= SM_PROGRAMCODE;    
                 end
 
                 SM_LOADPOINTLO:
