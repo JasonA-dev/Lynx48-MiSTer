@@ -67,7 +67,8 @@ always @(posedge clk)
                 begin
                     $display( "(state %x) filetype: %c",state,ioctl_dout);
                     fileType <= ioctl_dout;
-                    state <= SM_PROGRAMLO;
+		    if (ioctl_dout!='hA5)
+                    	state <= SM_PROGRAMLO;
                 end
 
                 SM_PROGRAMLO:
