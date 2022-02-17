@@ -12,10 +12,37 @@ module cpu
 	output wire       iorq,
 	output wire       wr,
 	input  wire[ 7:0] di,
-	output wire[ 7:0] do,
+	output wire[ 7:0] data_out,
 	output wire[15:0] a    
 );
+/*
+module tv80e (
+  // Outputs
+  m1_n, mreq_n, iorq_n, rd_n, wr_n, rfsh_n, halt_n, busak_n, A, dout,
+  // Inputs
+  reset_n, clk, cen, wait_n, int_n, nmi_n, busrq_n, di
+  );
 
+*/
+tv80e Cpu
+(
+	.clk (clock),
+	.cen (cep),
+	.reset_n(reset),
+	.busrq_n(1'b1 ),
+	.wait_n(1'b1 ),
+	.halt_n(halt_n ),
+	.mreq_n(mreq ),
+	.iorq_n(iorq ),
+	.nmi_n(1'b1 ),
+	.int_n(int_n),
+	.wr_n(wr   ),
+	.A      (a    ),
+	.di(di   ),
+	.dout(data_out)
+);
+
+/*
 T80pa Cpu
 (
 	.CLK    (clock),
@@ -36,13 +63,13 @@ T80pa Cpu
 	.WR_n   (wr   ),
 	.A      (a    ),
 	.DI     (di   ),
-	.DO     (do   ),
+	.DO     (data_out),
 	.OUT0   (1'b0 ),
 	.REG    (     ),
 	.DIRSet (1'b0 ),
 	.DIR    (212'd0)
 );
-
+*/
 //-------------------------------------------------------------------------------------------------
 endmodule
 //-------------------------------------------------------------------------------------------------

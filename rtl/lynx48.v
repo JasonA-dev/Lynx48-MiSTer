@@ -62,9 +62,10 @@ wire ce400n = ce4[0] & ~ce4[1] & ce4[2] & ~ce4[3];
 wire reset = reset_osd && reset_kbd;
 
 wire[ 7:0] di;
-wire[ 7:0] do;
+wire[ 7:0] data_out;
 wire[15:0] a;
-
+wire mreq;
+wire iorq;
 cpu Cpu
 (
 	.reset  (reset  ),
@@ -72,12 +73,12 @@ cpu Cpu
 	.cep    (ce400p ),
 	.cen    (ce400n ),
 	.int_n  (1),
-	//.halt_n (halt	 ),
+	.halt_n (),
 	.mreq   (mreq   ),
 	.iorq   (iorq   ),
 	.wr     (wr     ),
 	.di     (di     ),
-	.do     (do     ),
+	.data_out (data_out     ),
 	.a      (a      )
 );
 
@@ -110,7 +111,7 @@ rom #(.AW(14), .FN("48K-1+2.hex")) Rom_48
 (
 	.clock  (clock  ),
 	.ce     (ce400p   ),
-	.do     (romDo_48),
+	.data_out     (romDo_48),
 	.a      (romA   )
 );
 
@@ -118,7 +119,7 @@ rom #(.AW(15), .FN("96K-1+2+3.hex")) Rom_96
 (
 	.clock  (clock  ),
 	.ce     (ce400p   ),
-	.do     (romDo_96),
+	.data_out(romDo_96),
 	.a      (romA   )
 );
 
@@ -126,7 +127,7 @@ rom #(.AW(15), .FN("96K-1+2+3s.hex")) Rom_96s
 (
 	.clock  (clock  ),
 	.ce     (ce400p   ),
-	.do     (romDo_96s),
+	.data_out(romDo_96s),
 	.a      (romA   )
 );
 
@@ -134,21 +135,22 @@ wire[ 7:0] ramDi;
 wire[ 7:0] ramDo;
 wire[15:0] ramA;
 
+wire ramWe;
 
-dpram #(.addr_width_g(16)) Ram
+bram #(.widthad_a(14)) Ram
 (
     .clock_a  	(clock  ),
     .enable_a 	(ce400p  ),
-	.wren_a   	(~ramWe  ),
-    .data_a    	(ramDi  ),
+    .wren_a   	(~ramWe  ),
+    .data_a   	(ramDi  ),
     .q_a     	(ramDo  ),
-    .address_a	(ramA   ),
+    .address_a	(ramA[13:0]   ),
 
-    .clock_b  	(clock  	),
+    .clock_b  	 (clock  	),
     .enable_b   (1			),
     .wren_b     (tape_wr	),
-    .data_b    	(tape_dout	),
-    .address_b  (tape_addr	)	
+    .data_b     (tape_dout	),
+    .address_b  (tape_addr[13:0]	)	
 );
 
 /*
@@ -213,7 +215,7 @@ dpr #(.AW(14)) Vgg
 wire io7F = !(!iorq && !wr && a[6:0] == 7'h7F);
 
 reg[7:0] reg7F;
-always @(negedge reset, posedge clock) if(!reset) reg7F <= 1'd0; else if(ce400p) if(!io7F) reg7F <= do;
+always @(negedge reset, posedge clock) if(!reset) reg7F <= 1'd0; else if(ce400p) if(!io7F) reg7F <= data_out;
 	  
 //-------------------------------------------------------------------------------------------------
 
@@ -223,14 +225,14 @@ reg[5:1] reg80;
 reg motor;
 reg speaker;
 
-always @(negedge reset, posedge  clock) if(!reset) reg80 <= 8'h0c; else if(ce400p) if(!io80) reg80 <= do[5:1];
+always @(negedge reset, posedge  clock) if(!reset) reg80 <= 8'h0c; else if(ce400p) if(!io80) reg80 <= data_out[5:1];
 		
 //-------------------------------------------------------------------------------------------------
 
 wire io84 = !(!iorq && !wr && a[7] && !a[6] &&  a[2] && !a[1]);
 
 reg[5:0] reg84;
-always @(posedge clock) if(ce400p) if(!io84) reg84 <= do[5:0];
+always @(posedge clock) if(ce400p) if(!io84) reg84 <= data_out[5:0];
 
 //-------------------------------------------------------------------------------------------------
 
@@ -238,7 +240,7 @@ wire crtcCs = !(!iorq && !wr && a[7] && !a[6] &&  a[2] && a[1]);
 wire crtcRs = a[0];
 wire crtcRw = wr;
 
-wire[ 7:0] crtcDi = do;
+wire[ 7:0] crtcDi = data_out;
 
 wire[13:0] crtcMa;
 wire[ 4:0] crtcRa;
@@ -275,7 +277,7 @@ wire [1:0] 		vduB;
 
 wire[3:0] keybRow = a[11:8];
 wire[7:0] keybDo;
-
+wire reset_kbd;
 keyboard Keyboard
 (
 	.clock  (clock  ),
@@ -285,7 +287,7 @@ keyboard Keyboard
 	.cas    (cas    ),
 	.boot   (boot   ),
 	.row    (keybRow),
-	.do     (keybDo )
+	.data_out (keybDo )
 );
 
 //-------------------------------------------------------------------------------------------------
@@ -318,17 +320,17 @@ audio Audio
 assign romA = (mode != 2'b00 ? a[14:0] : a[13:0]);
 
 assign ramWe = !(!mreq && !wr && !reg7F[0]);
-assign ramDi = do;
+assign ramDi = data_out;
 assign ramA = mode == 2'b00 ? { 2'b00,  a[14], a[12:0] } : a ;
 
 assign vrbA1 = { vduB[0], vmmA };
 assign vrbWe2 = !(!mreq && !wr && reg7F[1] && reg80[5]);
-assign vrbDi2 = do;
+assign vrbDi2 = data_out;
 assign vrbA2 = { a[14], a[12:0] };
 
 assign vggA1 = { vduB[0], vmmA };
 assign vggWe2 = !(!mreq && !wr && reg7F[2] && reg80[5]);
-assign vggDi2 = do;
+assign vggDi2 = data_out;
 assign vggA2 = { a[14], a[12:0] };
 
 wire[12:0] vmmA = { crtcMa[10:5], crtcRa[1:0], crtcMa[4:0] };

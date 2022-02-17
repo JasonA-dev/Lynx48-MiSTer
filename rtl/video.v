@@ -17,7 +17,7 @@ module video
 
 
 reg[2:0] hCount;
-always @(posedge clock) if(!reset) hCount <= 1'd0; else if(ce) hCount <= hCount+1'd1;
+always @(posedge clock) if(!reset) hCount <= 3'd0; else if(ce) hCount <= hCount+1'd1;
 
 
 reg[7:0] redInput;

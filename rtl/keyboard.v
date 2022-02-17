@@ -9,7 +9,7 @@ module keyboard
 	output wire      boot,
 	output wire      cas,
 	input  wire[3:0] row,
-	output wire[7:0] do
+	output wire[7:0] data_out 
 );
 //-------------------------------------------------------------------------------------------------
 
@@ -204,7 +204,7 @@ if(received)
 assign cas = F8;
 assign boot = F11;
 assign reset = F11;
-assign do = key[row];
+assign data_out = key[row];
 
 //-------------------------------------------------------------------------------------------------
 endmodule
