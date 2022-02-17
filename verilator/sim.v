@@ -102,7 +102,6 @@ assign VGA_B={video[2:0],video[2],4'b0};
 
 wire [1:0] mode = 2'b0;
 wire crtcDe;
-wire [1:0] ps2 = 2'b0;
 wire ear;
 
 lynx48 lynx48

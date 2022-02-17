@@ -38,12 +38,14 @@ end
 reg ps2_clk_last;
 wire ps2_clk = ps2[10];
 wire pressed = ps2[9];
+wire extended = ps2[8];
 wire [7:0] scancode = ps2[7:0];
 always @(posedge clock)
 begin
 	ps2_clk_last <= ps2_clk;
 	if(ps2_clk != ps2_clk_last)
 	begin
+		$display("ps2 %2x %b %b", scancode, extended, pressed);
 		case(scancode)
 			8'h0A: F8        <= pressed; // F8
 			8'h78: F11       <= pressed; // F11

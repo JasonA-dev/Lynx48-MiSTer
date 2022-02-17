@@ -173,7 +173,7 @@ wire  [7:0] ioctl_data;
 
 //Keyboard Ps2
 
-wire [1:0] ps2;
+wire [10:0] ps2_key;
 wire [15:0]joystick_0;
 wire [15:0]joystick_1;
 
@@ -195,8 +195,7 @@ hps_io #(.STRLEN($size(CONF_STR)>>3), .PS2DIV(1103)) hps_io
 	.status_menumask({status[5]}),
 	
 	//Keyboard Ps2
-   	.ps2_kbd_clk_out(ps2[0]),
-   	.ps2_kbd_data_out(ps2[1]),
+	.ps2_key(ps2_key),
 	.joystick_0 (joystick_0),
 	.joystick_1 (joystick_1),
 
@@ -254,7 +253,7 @@ lynx48 lynx48
 	.crtcDe   (crtcDe ),
 	.rgb      (video  ),
 	
-	.ps2      (ps2    ),
+	.ps2      (ps2_key),
 	.joy_0    (~{1'b0,1'b0,joy_0[4],1'b0,joy_0[0],joy_0[1],joy_0[2],joy_0[3]} ),
 	.joy_1    (~{1'b0,1'b0,joy_1[4],1'b0,joy_1[0],joy_1[1],joy_1[2],joy_1[3]} ),
 	
