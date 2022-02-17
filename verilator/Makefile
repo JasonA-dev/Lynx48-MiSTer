@@ -49,6 +49,7 @@ CC_OPT = -O
 V_SRC = \
         sim.v \
 		$(RTL)/lynx48.v \
+		$(RTL)/cassette.v \
 		$(RTL)/cpu.v \
 		$(RTL)/TV80/tv80_core.v \
 		$(RTL)/TV80/tv80_alu.v \

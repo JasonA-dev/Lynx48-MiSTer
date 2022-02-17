@@ -50,9 +50,9 @@ always @(posedge clk)
                     state <= SM_FIRSTQUOTE;
 
                     // Bankswitch to write 1
-                    tape_wr <= 'b1;
-					tape_addr <= 'hFFFF; 						  
-                    tape_dout <= 'b00000;
+                    //tape_wr <= 'b1;
+		    //tape_addr <= 'hFFFF; 						  
+                    //tape_dout <= 'b00000;
                 end
 
                 SM_FIRSTQUOTE:
@@ -79,7 +79,7 @@ always @(posedge clk)
 
                 SM_LOADPOINTLO:
                 begin
-                    loadPoint[7:0] <= 'h4c ; //ioctl_dout;
+                    loadPoint[7:0] <= 'h4d ; //ioctl_dout;
                     state <= SM_LOADPOINTHI;
                 end
 
@@ -106,7 +106,7 @@ always @(posedge clk)
                 begin
                     // Load into ram ....
                     tape_wr <= 'b1;
-					tape_addr <= loadPoint; 						  
+		    tape_addr <= loadPoint; 						  
                     tape_dout <= ioctl_dout;
 
                     programLength <= programLength - 1;			  
@@ -115,10 +115,11 @@ always @(posedge clk)
                     if(programLength == 'h2)
 					begin
                         state <= SM_CHECKDIGIT;  
+		    	tape_wr <= 'b0;                     
                         
                         // Bankswitch to read 1
-					    tape_addr <= 'hFFFF; 						  
-                        tape_dout <= 'b100000;
+			//tape_addr <= 'hFFFF; 						  
+                        //tape_dout <= 'b100000;
                     end
                 end
 
@@ -131,15 +132,15 @@ always @(posedge clk)
                 SM_MYSTERYBYTE:
                 begin
                     mysteryByte <= ioctl_dout;  
-					tape_wr <= 'b0;                     
+		    tape_wr <= 'b0;                     
                 end
             endcase
-/*
+
             $display( "(state %x) (pl %x) (ft %x) (lp %x) (ep %x) (cd %x) (mb %x) %x: %x", 
                         state, programLength, 
                         fileType, loadPoint, execPoint, checkDigit, mysteryByte,
                         ioctl_addr, ioctl_dout);
-*/
+
         end
 	end
 

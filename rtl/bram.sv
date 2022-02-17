@@ -50,6 +50,7 @@ always @(posedge clock_b) begin
     if(wren_b) begin
         q_b      <= data_b;
         mem[address_b] <= data_b;
+        $display("writingb: %x %x",address_b,data_b);
     end
 end
  

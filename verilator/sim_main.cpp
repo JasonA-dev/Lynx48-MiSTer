@@ -223,6 +223,8 @@ int main(int argc, char** argv, char** env) {
 	// Setup video output
 	if (video.Initialise(windowTitle) == 1) { return 1; }
 
+	bus.QueueDownload("zombie.tap",1,0);
+
 #ifdef WIN32
 	MSG msg;
 	ZeroMemory(&msg, sizeof(msg));
