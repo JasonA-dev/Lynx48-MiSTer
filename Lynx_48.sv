@@ -122,16 +122,16 @@ module emu
 assign USER_OUT = '1;
 assign {UART_RTS, UART_TXD, UART_DTR} = 0;
 assign {SD_SCK, SD_MOSI, SD_CS} = 'Z;
-//assign {SDRAM_DQ, SDRAM_A, SDRAM_BA, SDRAM_CLK, SDRAM_CKE, SDRAM_DQML, SDRAM_DQMH, SDRAM_nWE, SDRAM_nCAS, SDRAM_nRAS, SDRAM_nCS} = 'Z;
+assign {SDRAM_DQ, SDRAM_A, SDRAM_BA, SDRAM_CLK, SDRAM_CKE, SDRAM_DQML, SDRAM_DQMH, SDRAM_nWE, SDRAM_nCAS, SDRAM_nRAS, SDRAM_nCS} = 'Z;
 assign {DDRAM_CLK, DDRAM_BURSTCNT, DDRAM_ADDR, DDRAM_DIN, DDRAM_BE, DDRAM_RD, DDRAM_WE} = '0;  
 
 //assign VGA_SL = 0;
 assign VGA_F1 = 0;
 
-//assign AUDIO_S = 0;
+assign AUDIO_S = 0;
 //assign AUDIO_L = 0;
 //assign AUDIO_R = 0;
-//assign AUDIO_MIX = 0;
+assign AUDIO_MIX = 0;
 
 assign LED_DISK = 0;
 assign LED_POWER = 0;
@@ -309,32 +309,6 @@ video_mixer #(448, 1) mixer
         .VGA_DE(VGA_DE)
 );
 
-ssdram #(96) ssdram
-(
-  .clock_i    (clk_sdram),
-  .reset_i    (reset),
-  .refresh_i  (1'b1),
-  //
-  .addr_i     (ram_addr),
-  .data_i     (ram_data_i),
-  .data_o     (ram_data_o),
-  .cs_i       (ram_cs_i),
-  .oe_i       (ram_oe_i),
-  .we_i       (ram_we_i),
-  //
-  .mem_cke_o  (SDRAM_CKE),
-  .mem_cs_n_o (SDRAM_nCS),
-  .mem_ras_n_o(SDRAM_nRAS),
-  .mem_cas_n_o(SDRAM_nCAS),
-  .mem_we_n_o (SDRAM_nWE),
-  .mem_udq_o  (SDRAM_DQMH),
-  .mem_ldq_o  (SDRAM_DQML),
-  .mem_ba_o   (SDRAM_BA),
-  .mem_addr_o (SDRAM_A),
-  .mem_data_io(SDRAM_DQ)
-  
-);
-assign SDRAM_CLK = clk_sdram_o;
 
 /////////  EAR added by Fernando Mosquera
 wire ear;
