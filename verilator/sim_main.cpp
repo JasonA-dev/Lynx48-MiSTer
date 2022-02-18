@@ -223,7 +223,7 @@ int main(int argc, char** argv, char** env) {
 	// Setup video output
 	if (video.Initialise(windowTitle) == 1) { return 1; }
 
-	bus.QueueDownload("zombie.tap",1,0);
+	//bus.QueueDownload("zombie.tap",1,0);
 
 #ifdef WIN32
 	MSG msg;
@@ -274,6 +274,8 @@ int main(int argc, char** argv, char** env) {
 		if (ImGui::Button("Multi Step")) { run_enable = 0; multi_step = 1; }
 		//ImGui::SameLine();
 		ImGui::SliderInt("Multi step amount", &multi_step_amount, 8, 1024);
+if (ImGui::Button("Load Tape"))
+    ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".tap", ".");
 
 		ImGui::End();
 
@@ -352,6 +354,23 @@ int main(int argc, char** argv, char** env) {
 		// Draw VGA output
 		ImGui::Image(video.texture_id, ImVec2(video.output_width * VGA_SCALE_X, video.output_height * VGA_SCALE_Y));
 		ImGui::End();
+
+  if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey"))
+  {
+    // action if OK
+    if (ImGuiFileDialog::Instance()->IsOk())
+    {
+      std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+      std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+      // action
+fprintf(stderr,"filePathName: %s\n",filePathName.c_str());
+fprintf(stderr,"filePath: %s\n",filePath.c_str());
+     bus.QueueDownload(filePathName, 1,0);
+    }
+   
+    // close
+    ImGuiFileDialog::Instance()->Close();
+  }
 
 
 #ifndef DISABLE_AUDIO

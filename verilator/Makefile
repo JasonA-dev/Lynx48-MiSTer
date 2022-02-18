@@ -51,6 +51,7 @@ V_SRC = \
 		$(RTL)/lynx48.v \
 		$(RTL)/cassette.v \
 		$(RTL)/cpu.v \
+		$(RTL)/keyboard.v \
 		$(RTL)/TV80/tv80_core.v \
 		$(RTL)/TV80/tv80_alu.v \
 		$(RTL)/TV80/tv80_mcode.v \
