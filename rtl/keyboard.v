@@ -41,7 +41,7 @@ begin
 	if (ce)
 	if(input_strobe)
 	begin
-		$display("ps2 %2x %b %b", scancode, extended, pressed);
+		//$display("ps2 %2x %b %b", scancode, extended, pressed);
 		case(scancode)
 			8'h0A: F8        <= ~pressed; // F8
 			8'h78: F11       <= ~pressed; // F11
@@ -138,7 +138,7 @@ begin
 //			8'h00: key[9][6] <= ~pressed; // 
 //			8'h00: key[9][7] <= ~pressed; // 
 		endcase
-		$display("key[4][5] B - %b [0][7] shift %b",key[4][5],key[0][7]);
+		//$display("key[4][5] B - %b [0][7] shift %b",key[4][5],key[0][7]);
 	end
 end
 
