@@ -45,15 +45,25 @@ assign ce_pix = ce600p;
 
 reg[5:0] ce = 0;
 always @(negedge clock) ce <= ce+1'd1;
-
-wire ce600p = ~ce[0] & ~ce[1] &  ce[2];
-wire ce075p = ~ce[0] & ~ce[1] & ~ce[2] & ~ce[3] & ~ce[4] &  ce[5];
-
 reg[3:0] ce4 = 0;
 always @(negedge clock) if(ce400p) ce4 <= 4'd0; else ce4 <= ce4+4'd1;
 
+`ifdef VERILATOR
+wire ce600p = ~ce[0] & ce[1] ;
+wire ce075p = ~ce[0] & ~ce[1] & ~ce[2] & ~ce[3] & ce[4];
+
+wire ce400p =  ce4[0]          &  ce4[2];
+wire ce400n =  ce4[0] & ce4[1] & ~ce4[2];
+
+
+`else
+wire ce600p = ~ce[0] & ~ce[1] &  ce[2];
+wire ce075p = ~ce[0] & ~ce[1] & ~ce[2] & ~ce[3] & ~ce[4] &  ce[5];
+
 wire ce400p = ce4[0] &  ce4[1]          &  ce4[3];
 wire ce400n = ce4[0] & ~ce4[1] & ce4[2] & ~ce4[3];
+
+`endif
 
 
 //-------------------------------------------------------------------------------------------------
