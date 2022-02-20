@@ -198,6 +198,7 @@ int main(int argc, char** argv, char** env) {
 	input.SetMapping(input_a, DIK_Z); // A
 	input.SetMapping(input_b, DIK_X); // B
 	input.SetMapping(input_x, DIK_A); // X
+
 	input.SetMapping(input_y, DIK_S); // Y
 	input.SetMapping(input_l, DIK_Q); // L
 	input.SetMapping(input_r, DIK_W); // R

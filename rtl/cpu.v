@@ -42,8 +42,8 @@ tv80e Cpu
 	.A      (a    ),
 	.di(di   ),
 	.dout(data_out),
-	.dir (),
-	.dirset ()
+	.dir (dir),
+	.dirset (dirset)
 );
 
 /*

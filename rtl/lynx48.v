@@ -77,8 +77,8 @@ wire[15:0] a;
 wire mreq;
 wire iorq;
 wire wr;
-wire[15:0] dir;
-wire dirset;
+reg[15:0] dir;
+reg dirset;
 
 cpu Cpu
 (
@@ -103,7 +103,7 @@ cpu Cpu
 wire [15:0]			tape_addr;
 wire				tape_wr;
 wire [7:0]			tape_dout;
-wire				tape_complete;
+reg				tape_complete;
 cassette cassette
 (
   .clk(clock),
@@ -123,12 +123,14 @@ always @(posedge clock)
 begin
 	if (tape_complete == 1'b1)
 		begin
+            $display( "(tc %x)", tape_complete);
 			//dir <= tape_addr;
-			//dirset <= 1'b1;
+			dirset <= 1'b1;
+			tape_complete <= 1'b0;
 		end
 	else
 		begin
-			//dirset <= 1'b0;
+			dirset <= 1'b0;
 		end
 end
 

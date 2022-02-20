@@ -408,7 +408,11 @@ module tv80_core (/*AUTOARG*/
           XY_Ind <= #1 1'b0;
         end 
       else if (dirset == 1'b1)
-          PC <= dir;
+        begin
+            $display( "(before PC %x)", PC);
+            PC <= dir;
+            $display( "(after PC %x)", PC);
+        end
       else 
         begin
 

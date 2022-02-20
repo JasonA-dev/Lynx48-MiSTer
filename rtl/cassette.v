@@ -211,20 +211,20 @@ always @(posedge clk)
                 begin
                     mysteryByte <= ioctl_dout;  
                     previous_state <= state;     
-                    tape_complete <= 1'b1;           
                     state <= SM_COMPLETED; 
                 end
 
                 SM_COMPLETED:
                 begin
+                    tape_complete <= 1'b1;
 		            tape_wr <= 'b0;  
                 end
 
             endcase
 
-            $display( "(state %x) (pl %x) (ft %x) (lp %x) (ep %x) (cd %x) (mb %x) %x: %x", 
+            $display( "(state %x) (pl %x) (ft %x) (lp %x) (ep %x) (cd %x) (mb %x) (tc %x) %x: %x", 
                         state, programLength, 
-                        fileType, loadPoint, execPoint, checkDigit, mysteryByte,
+                        fileType, loadPoint, execPoint, checkDigit, mysteryByte, tape_complete,
                         ioctl_addr, ioctl_dout);
 
         end
