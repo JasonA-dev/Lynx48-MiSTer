@@ -91,7 +91,8 @@ module tv80e (/*AUTOARG*/
      .dout (dout),
      .mc (mcycle),
      .ts (tstate),
-     .intcycle_n (intcycle_n)
+     .intcycle_n (intcycle_n),
+     .dirset ()
      );  
 
   always @(posedge clk or negedge reset_n)

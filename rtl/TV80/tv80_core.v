@@ -26,7 +26,7 @@
 module tv80_core (/*AUTOARG*/
   // Outputs
   m1_n, iorq, no_read, write, rfsh_n, halt_n, busak_n, A, dout, mc,
-  ts, intcycle_n, IntE, stop,
+  ts, intcycle_n, IntE, stop, dirset,
   // Inputs
   reset_n, clk, cen, wait_n, int_n, nmi_n, busrq_n, dinst, di
   );
@@ -66,7 +66,9 @@ module tv80_core (/*AUTOARG*/
   output [6:0]  ts;     
   output        intcycle_n;     
   output        IntE;           
-  output        stop;           
+  output        stop;   
+
+  input     dirset;         
 
   reg    m1_n;          
   reg    iorq; 
@@ -147,6 +149,7 @@ module tv80_core (/*AUTOARG*/
   reg           Auto_Wait_t1;
   reg           Auto_Wait_t2;
   reg           IncDecZ;
+
 
   // ALU signals
   reg [7:0]     BusB;
@@ -319,6 +322,24 @@ module tv80_core (/*AUTOARG*/
     end
   endfunction
   
+  always@(posedge clk) begin
+    /*
+			if (DIRSet ='h1')
+      begin
+				ACC <= DIR[7:0];
+				F   <= DIR[15:8];
+				Ap  <= DIR[23:16];
+				Fp  <= DIR[31:24];
+				I   <= DIR[39:32];
+				R   <= unsigned(DIR[47:40]);
+				SP  <= unsigned(DIR[63:48]);
+				PC  <= unsigned(DIR[79:64]);
+			  BusA <= DIR[79:64];   // Previously ABus
+				IStatus <= DIR[209:208];
+      end
+    */
+  end
+
   always @(/*AUTOSENSE*/mcycle or mcycles or tstate or tstates)
     begin
       case (mcycles)
