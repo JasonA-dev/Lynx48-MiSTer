@@ -13,7 +13,9 @@ module cpu
 	output wire       wr,
 	input  wire[ 7:0] di,
 	output wire[ 7:0] data_out,
-	output wire[15:0] a    
+	output wire[15:0] a,
+	input wire dir,
+	input wire dirset 
 );
 /*
 module tv80e (
@@ -39,7 +41,9 @@ tv80e Cpu
 	.wr_n(wr   ),
 	.A      (a    ),
 	.di(di   ),
-	.dout(data_out)
+	.dout(data_out),
+	.dir (),
+	.dirset ()
 );
 
 /*

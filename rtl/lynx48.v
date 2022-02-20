@@ -77,6 +77,8 @@ wire[15:0] a;
 wire mreq;
 wire iorq;
 wire wr;
+wire dir;
+wire dirset;
 cpu Cpu
 (
 	.reset  (reset  ),
@@ -90,7 +92,9 @@ cpu Cpu
 	.wr     (wr     ),
 	.di     (di     ),
 	.data_out (data_out     ),
-	.a      (a      )
+	.a      (a      ),
+	.dir 	(),
+	.dirset (dirset)
 );
 
 
@@ -164,32 +168,12 @@ bram #(.widthad_a(14)) Ram
     .address_b  (tape_addr[13:0]	)	
 );
 
-/*
-spr #(.AW(14)) Ram
-(
-	.clock_a	(clock),
-	
-	.ce_a		(ce400p),
-	.we_a		(ramWe),
-	.di_a		(ramDi),
-	.do_a		(ramDo),
-	.a_a		(ramA),
-
-	//.clock_b	(clock),
-	.ce_b		(1),
-	.we_b		(tape_wr),
-	.di_b		(tape_dout),
-	.a_b		(tape_addr)
-);
-*/
-
 wire[ 7:0] vrbDo1;
 wire[13:0] vrbA1;
 wire[ 7:0] vrbDi2;
 wire[ 7:0] vrbDo2;
 wire[13:0] vrbA2;
 wire vrbWe2;
-
 
 dpr #(.AW(14)) Vrb
 (

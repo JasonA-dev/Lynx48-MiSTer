@@ -25,15 +25,14 @@
 
 module tv80e (/*AUTOARG*/
   // Outputs
-  m1_n, mreq_n, iorq_n, rd_n, wr_n, rfsh_n, halt_n, busak_n, A, dout, 
+  m1_n, mreq_n, iorq_n, rd_n, wr_n, rfsh_n, halt_n, busak_n, A, dout,
   // Inputs
-  reset_n, clk, cen, wait_n, int_n, nmi_n, busrq_n, di
+  reset_n, clk, cen, wait_n, int_n, nmi_n, busrq_n, di, dir, dirset
   );
 
   parameter Mode = 0;    // 0 => Z80, 1 => Fast Z80, 2 => 8080, 3 => GB
   parameter T2Write = 1; // 0 => wr_n active in T3, /=0 => wr_n active in T2
   parameter IOWait  = 1; // 0 => Single cycle I/O, 1 => Std I/O cycle
-
 
   input         reset_n;
   input         clk;
@@ -53,6 +52,9 @@ module tv80e (/*AUTOARG*/
   output [15:0] A;
   input [7:0]   di;
   output [7:0]  dout;
+
+  input         dir;
+  input         dirset;
 
   reg           mreq_n;
   reg           iorq_n;
@@ -92,7 +94,8 @@ module tv80e (/*AUTOARG*/
      .mc (mcycle),
      .ts (tstate),
      .intcycle_n (intcycle_n),
-     .dirset ()
+     .dir (dir),
+     .dirset (dirset)
      );  
 
   always @(posedge clk or negedge reset_n)

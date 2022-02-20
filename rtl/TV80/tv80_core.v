@@ -26,9 +26,9 @@
 module tv80_core (/*AUTOARG*/
   // Outputs
   m1_n, iorq, no_read, write, rfsh_n, halt_n, busak_n, A, dout, mc,
-  ts, intcycle_n, IntE, stop, dirset,
+  ts, intcycle_n, IntE, stop,
   // Inputs
-  reset_n, clk, cen, wait_n, int_n, nmi_n, busrq_n, dinst, di
+  reset_n, clk, cen, wait_n, int_n, nmi_n, busrq_n, dinst, di, dir, dirset
   );
   // Beginning of automatic inputs (from unused autoinst inputs)
   // End of automatics
@@ -68,7 +68,8 @@ module tv80_core (/*AUTOARG*/
   output        IntE;           
   output        stop;   
 
-  input     dirset;         
+  input         dir;   
+  input         dirset;         
 
   reg    m1_n;          
   reg    iorq; 
@@ -83,7 +84,7 @@ module tv80_core (/*AUTOARG*/
   reg [6:0]  ts;        
   reg   intcycle_n;     
   reg   IntE;           
-  reg   stop;           
+  reg   stop;          
 
   parameter     aNone    = 3'b111;
   parameter     aBC      = 3'b000;
@@ -149,7 +150,6 @@ module tv80_core (/*AUTOARG*/
   reg           Auto_Wait_t1;
   reg           Auto_Wait_t2;
   reg           IncDecZ;
-
 
   // ALU signals
   reg [7:0]     BusB;
@@ -321,24 +321,6 @@ module tv80_core (/*AUTOARG*/
       endcase
     end
   endfunction
-  
-  always@(posedge clk) begin
-    /*
-			if (DIRSet ='h1')
-      begin
-				ACC <= DIR[7:0];
-				F   <= DIR[15:8];
-				Ap  <= DIR[23:16];
-				Fp  <= DIR[31:24];
-				I   <= DIR[39:32];
-				R   <= unsigned(DIR[47:40]);
-				SP  <= unsigned(DIR[63:48]);
-				PC  <= unsigned(DIR[79:64]);
-			  BusA <= DIR[79:64];   // Previously ABus
-				IStatus <= DIR[209:208];
-      end
-    */
-  end
 
   always @(/*AUTOSENSE*/mcycle or mcycles or tstate or tstates)
     begin
@@ -365,7 +347,6 @@ module tv80_core (/*AUTOARG*/
       endcase
     end // always @ (...
   
-          
   always @(/*AUTOSENSE*/ALU_Q or BusAck or BusB or DI_Reg
 	   or ExchangeRp or IR or Save_ALU_r or Set_Addr_To or XY_Ind
 	   or XY_State or cen or last_tstate or mcycle)
@@ -426,6 +407,8 @@ module tv80_core (/*AUTOARG*/
           PreserveC_r <= #1 1'b0;
           XY_Ind <= #1 1'b0;
         end 
+      else if (dirset == 1'b1)
+          PC <= dir;
       else 
         begin
 
