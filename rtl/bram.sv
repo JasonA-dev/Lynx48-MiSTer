@@ -35,6 +35,7 @@ module bram #(
  
 // Shared memory
 reg [width_a-1:0] mem [(2**widthad_a)-1:0];
+
 // Port A
 always @(posedge clock_a) begin
     q_a      <= mem[address_a];
@@ -50,6 +51,7 @@ always @(posedge clock_b) begin
     if(wren_b) begin
         q_b      <= data_b;
         mem[address_b] <= data_b;
+
         $display("writingb: %x %x",address_b,data_b);
     end
 end
