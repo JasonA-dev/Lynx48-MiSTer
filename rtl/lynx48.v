@@ -124,7 +124,7 @@ begin
 	if (tape_complete == 1'b1)
 		begin
             $display( "(tc %x)", tape_complete);
-			//dir <= tape_addr;
+			dir <= tape_addr;
 			dirset <= 1'b1;
 			tape_complete <= 1'b0;
 		end
