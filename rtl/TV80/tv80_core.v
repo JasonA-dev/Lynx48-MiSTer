@@ -68,7 +68,7 @@ module tv80_core (/*AUTOARG*/
   output        IntE;           
   output        stop;   
 
-  input         dir;   
+  input [15:0]  dir;   
   input         dirset;         
 
   reg    m1_n;          

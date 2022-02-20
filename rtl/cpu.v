@@ -14,7 +14,7 @@ module cpu
 	input  wire[ 7:0] di,
 	output wire[ 7:0] data_out,
 	output wire[15:0] a,
-	input wire dir,
+	input wire [15:0] dir,
 	input wire dirset 
 );
 /*

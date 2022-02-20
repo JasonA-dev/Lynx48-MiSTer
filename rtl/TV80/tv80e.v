@@ -53,7 +53,7 @@ module tv80e (/*AUTOARG*/
   input [7:0]   di;
   output [7:0]  dout;
 
-  input         dir;
+  input [15:0]  dir;
   input         dirset;
 
   reg           mreq_n;

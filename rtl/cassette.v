@@ -9,7 +9,8 @@ module cassette(
 
   output reg [15:0]  tape_addr,
   output reg         tape_wr,
-  output reg [7:0]   tape_dout
+  output reg [7:0]   tape_dout,
+  output reg         tape_complete
 );
 
 // State machine constants
@@ -58,6 +59,7 @@ always @(posedge clk)
                 SM_INIT:
                 if(ioctl_dout=='h22)
                 begin
+                    tape_complete <= 1'b0;                    
 		            loadPoint <= 'h694d;
                     previous_state <= state;
                     state <= SM_SECONDQUOTE;
@@ -208,13 +210,14 @@ always @(posedge clk)
                 SM_MYSTERYBYTE:
                 begin
                     mysteryByte <= ioctl_dout;  
-                    previous_state <= state;               
+                    previous_state <= state;     
+                    tape_complete <= 1'b1;           
                     state <= SM_COMPLETED; 
                 end
 
                 SM_COMPLETED:
                 begin
-		            tape_wr <= 'b0;   
+		            tape_wr <= 'b0;  
                 end
 
             endcase

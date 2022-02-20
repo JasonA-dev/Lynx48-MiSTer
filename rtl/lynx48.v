@@ -77,8 +77,9 @@ wire[15:0] a;
 wire mreq;
 wire iorq;
 wire wr;
-wire dir;
+wire[15:0] dir;
 wire dirset;
+
 cpu Cpu
 (
 	.reset  (reset  ),
@@ -93,16 +94,16 @@ cpu Cpu
 	.di     (di     ),
 	.data_out (data_out     ),
 	.a      (a      ),
-	.dir 	(),
-	.dirset (dirset)
+	.dir 	(dir	),
+	.dirset (dirset	)
 );
-
 
 //-------------------------------------------------------------------------------------------------
 
 wire [15:0]			tape_addr;
 wire				tape_wr;
 wire [7:0]			tape_dout;
+wire				tape_complete;
 cassette cassette
 (
   .clk(clock),
@@ -114,8 +115,24 @@ cassette cassette
 
   .tape_addr(tape_addr),
   .tape_wr(tape_wr),
-  .tape_dout(tape_dout)
+  .tape_dout(tape_dout),
+  .tape_complete(tape_complete)
 );
+
+always @(posedge clock) 
+begin
+	if (tape_complete == 1'b1)
+		begin
+			//dir <= tape_addr;
+			//dirset <= 1'b1;
+		end
+	else
+		begin
+			//dirset <= 1'b0;
+		end
+end
+
+//-------------------------------------------------------------------------------------------------
 
 wire[ 7:0] romDo_48;
 wire[ 7:0] romDo_96;
