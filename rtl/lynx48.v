@@ -113,7 +113,7 @@ cassette cassette
   .ioctl_addr(ioctl_addr),
   .ioctl_dout(ioctl_data),
 
-  .reset(reset),
+  .reset_n(reset),
 
   .tape_addr(tape_addr),
   .tape_wr(tape_wr),
