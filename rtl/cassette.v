@@ -45,11 +45,11 @@ reg [15:0]  previous_state  = 0;
 reg [15:0]  state = SM_INIT;
 
 
-always @(negedge reset) state <= SM_INIT;
+//always @(negedge reset) state <= SM_INIT;
     
 always @(posedge clk) 
     begin
-        if (ioctl_download && ioctl_wr)
+        if(ioctl_download && ioctl_wr)
         begin
 
             case (state)
@@ -253,6 +253,8 @@ always @(posedge clk)
                         ioctl_addr, ioctl_dout);
 
         end
+        else if (reset) 
+            state<=SM_INIT; 
 	end
 
 endmodule
