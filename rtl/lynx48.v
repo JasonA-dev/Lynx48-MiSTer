@@ -103,7 +103,7 @@ cpu Cpu
 wire [15:0]			tape_addr;
 wire				tape_wr;
 wire [7:0]			tape_dout;
-wire					tape_complete;
+wire				tape_complete;
 cassette cassette
 (
   .clk(clock),
@@ -112,6 +112,8 @@ cassette cassette
   .ioctl_wr(ioctl_wr),
   .ioctl_addr(ioctl_addr),
   .ioctl_dout(ioctl_data),
+
+  .reset(reset),
 
   .tape_addr(tape_addr),
   .tape_wr(tape_wr),

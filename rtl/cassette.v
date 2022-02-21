@@ -7,6 +7,8 @@ module cassette(
   input      [24:0]  ioctl_addr,
   input      [7:0]   ioctl_dout,
 
+  input              reset,
+
   output reg [15:0]  tape_addr,
   output reg         tape_wr,
   output reg [7:0]   tape_dout,
@@ -42,6 +44,9 @@ reg [15:0]  previous_state  = 0;
 
 reg [15:0]  state = SM_INIT;
 
+
+always @(negedge reset) state <= SM_INIT;
+    
 always @(posedge clk) 
     begin
         if (ioctl_download && ioctl_wr)
