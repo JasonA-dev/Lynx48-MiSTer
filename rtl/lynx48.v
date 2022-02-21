@@ -103,7 +103,7 @@ cpu Cpu
 wire [15:0]			tape_addr;
 wire				tape_wr;
 wire [7:0]			tape_dout;
-reg				tape_complete;
+wire					tape_complete;
 cassette cassette
 (
   .clk(clock),
@@ -126,7 +126,7 @@ begin
             $display( "(tc %x tape_addr %x)", tape_complete,tape_addr);
 			dir <= tape_addr;
 			dirset <= 1'b1;
-			tape_complete <= 1'b0;
+			//tape_complete <= 1'b0;
 		end
 	else
 		begin
