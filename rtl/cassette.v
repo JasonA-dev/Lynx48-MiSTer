@@ -50,6 +50,7 @@ always @(posedge clk)
             case (state)
                 SM_WAITCYCLE:
                 begin
+                    execPoint <= 'h694d;
                     $display( "(state %x) waitcycle: %c",state,waitcycle);
                     waitcycle <= waitcycle - 1;
                     if(waitcycle=='h0)
@@ -60,7 +61,8 @@ always @(posedge clk)
                 if(ioctl_dout=='h22)
                 begin
                     tape_complete <= 1'b0;                    
-		            loadPoint <= 'h694d;
+		    loadPoint <= 'h694d;
+                    //execPoint <= 'h0cc1;
                     previous_state <= state;
                     state <= SM_SECONDQUOTE;
 
@@ -85,9 +87,11 @@ always @(posedge clk)
                 begin
                     $display( "(state %x) filetype: %c",state,ioctl_dout);
                     fileType <= ioctl_dout;
-
-		            if (ioctl_dout!='hA5)   // A5 is to be ignored
-                        state <= SM_PROGRAMLO;
+		    if (ioctl_dout!='hA5)   // A5 is to be ignored
+                    begin
+                          state <= SM_PROGRAMLO;
+   
+                    end
                 end
 
                 SM_PROGRAMLO:
@@ -103,9 +107,9 @@ always @(posedge clk)
                     //previous_state <= state;
                     //state <= SM_LOADPOINTLO;
 
-		            if (fileType=='h42)             // Basic
+		        if (fileType=='h42)             // Basic
                     begin
-		                loadPoint <= 'h694d;
+		        loadPoint <= 'h694d;
 		                //tape_addr <= loadPoint; 
                         previous_state <= state;
                     	state <= SM_PROGRAMCODE;  
@@ -131,9 +135,9 @@ always @(posedge clk)
                 SM_LOADPOINTLO:
                 begin
                     //if (fileType!='h4D) 
-                        loadPoint[7:0] <= 'h4d;
+                    //    loadPoint[7:0] <= 'h4d;
                     //else
-                    //    loadPoint[7:0] <= ioctl_dout;
+                    loadPoint[7:0] <= ioctl_dout;
 
                     previous_state <= state;
                     state <= SM_LOADPOINTHI;
@@ -142,18 +146,19 @@ always @(posedge clk)
                 SM_LOADPOINTHI:
                 begin
                     //if (fileType!='h4D) 
-                        loadPoint[15:8] <= 'h69;
+                    //    loadPoint[15:8] <= 'h69;
                     //else 
-                    //    loadPoint[15:8] <= ioctl_dout;
-/*
-		            if (fileType=='h4D || fileType=='h44)  // Machine Code, Data
+                        loadPoint[15:8] <= ioctl_dout;
+
+	            if (fileType=='h4D || fileType=='h44)  // Machine Code, Data
                     begin
                         previous_state <= state;
                     	state <= SM_PROGRAMCODE; 
                     end
-*/
-                    previous_state <= state;
-                    state <= SM_EXECPOINTLO; 
+		    else begin 
+                    	previous_state <= state;
+                    	state <= SM_EXECPOINTLO; 
+		    end
                 end
 
                 SM_EXECPOINTLO:
@@ -161,16 +166,24 @@ always @(posedge clk)
                     execPoint[7:0] <= ioctl_dout;    
                     previous_state <= state;                   
                     state <= SM_EXECPOINTHI;      
+		    tape_wr <= 'b0;  
                 end
 
                 SM_EXECPOINTHI:
                 begin
                     execPoint[15:8] <= ioctl_dout;   
                     programLength <= programLength - 2;  
-		            //tape_addr <= loadPoint; 
-                    execPoint <= 'h694d;
+		     //tape_addr <= loadPoint; 
+                    //execPoint <= 'h694d;
                     previous_state <= state;               
-                    state <= SM_PROGRAMCODE;    
+		    if (fileType=='h4D)        // Machine Code
+		    begin
+                      state <= SM_COMPLETED; 
+                      tape_complete <= 1'b1;
+	              tape_addr <= {ioctl_dout,execPoint[7:0]} ; 
+                    end
+	  	    else
+                       state <= SM_PROGRAMCODE;    
                 end
 
                 SM_PROGRAMCODE:
@@ -178,19 +191,16 @@ always @(posedge clk)
                     // Load into bram ....
                     tape_wr <= 'b1;	 	
                     tape_dout <= ioctl_dout;
-		            tape_addr <= loadPoint; 
+		    tape_addr <= loadPoint; 
                     programLength <= programLength - 1;			  
                     loadPoint <= loadPoint + 1;
 
-                    if(programLength=='h1 && fileType!='h42) // 'h2
-					begin
+                    if(programLength=='h0 && fileType!='h42) // 'h2
+			begin
                         previous_state <= state;
-                        state <= SM_CHECKDIGIT;  
-		    	        tape_wr <= 'b0;                     
+                        state <= SM_MYSTERYBYTE;  
+		        tape_wr <= 'b0;                     
                         
-                        // Switch to read bank1
-			            //tape_addr <= 'hFFFF; 						  
-                        //tape_dout <= 'b100000;
                     end
                     else if (programLength=='h0 && fileType=='h42)
                     begin
@@ -210,15 +220,24 @@ always @(posedge clk)
                 SM_MYSTERYBYTE:
                 begin
                     mysteryByte <= ioctl_dout;  
-                    tape_complete <= 1'b1;
-		            tape_addr <= execPoint; 
                     previous_state <= state;   
-                    state <= SM_COMPLETED; 
+		    if (fileType=='h4D)        // Machine Code
+                    begin
+                      state <=  SM_EXECPOINTLO;
+                    end
+		    else
+			begin
+                      state <= SM_COMPLETED; 
+                    tape_complete <= 1'b1;
+	            tape_addr <= execPoint; 
+			end
                 end
 
                 SM_COMPLETED:
                 begin
 		            tape_wr <= 'b0;  
+                    tape_complete <= 1'b0;
+		   state <= SM_INIT;
                 end
 
             endcase

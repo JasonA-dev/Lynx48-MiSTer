@@ -123,7 +123,7 @@ always @(posedge clock)
 begin
 	if (tape_complete == 1'b1)
 		begin
-            $display( "(tc %x)", tape_complete);
+            $display( "(tc %x tape_addr %x)", tape_complete,tape_addr);
 			dir <= tape_addr;
 			dirset <= 1'b1;
 			tape_complete <= 1'b0;
