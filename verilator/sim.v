@@ -100,7 +100,7 @@ assign VGA_R={video[8:6],video[8],4'b0};
 assign VGA_G={video[5:3],video[5],4'b0};
 assign VGA_B={video[2:0],video[2],4'b0};
 
-wire [1:0] mode = 2'b0;
+wire [1:0] mode = 2'b10; // b0 = 48k, b1 = 96k
 wire crtcDe;
 wire ear;
 

@@ -45,8 +45,6 @@ reg [15:0]  previous_state  = 0;
 reg [15:0]  state = SM_INIT;
 
 
-//always @(negedge reset) state <= SM_INIT;
-    
 always @(posedge clk) 
     begin
 	if (reset_n == 1'b0)
@@ -70,15 +68,10 @@ always @(posedge clk)
                 if(ioctl_dout=='h22)
                 begin
                     tape_complete <= 1'b0;                    
-		    loadPoint <= 'h694d;
+		            loadPoint <= 'h694d;
                     //execPoint <= 'h0cc1;
                     previous_state <= state;
                     state <= SM_SECONDQUOTE;
-
-                    // Switch to write bank1
-                    //tape_wr <= 'b1;
-		            //tape_addr <= 'hFFFF; 						  
-                    //tape_dout <= 'b00000;
                 end
 
                 SM_SECONDQUOTE:
@@ -200,7 +193,7 @@ always @(posedge clk)
                     // Load into bram ....
                     tape_wr <= 'b1;	 	
                     tape_dout <= ioctl_dout;
-		    tape_addr <= loadPoint; 
+		            tape_addr <= loadPoint; 
                     programLength <= programLength - 1;			  
                     loadPoint <= loadPoint + 1;
 
