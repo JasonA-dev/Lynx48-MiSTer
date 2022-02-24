@@ -172,20 +172,20 @@ wire[15:0] ramA;
 
 wire ramWe;
 
-bram #(.widthad_a(14)) Ram
+bram #(.widthad_a(16)) Ram
 (
     .clock_a  	(clock  ),
     .enable_a 	(ce400p  ),
     .wren_a   	(~ramWe  ),
     .data_a   	(ramDi  ),
     .q_a     	(ramDo  ),
-    .address_a	(ramA[13:0]   ),
+    .address_a	(ramA  ),
 
     .clock_b  	 (clock  	),
     .enable_b   (1			),
     .wren_b     (tape_wr	),
     .data_b     (tape_dout	),
-    .address_b  (tape_addr[13:0]	)	
+    .address_b  (tape_addr	)	
 );
 
 wire[ 7:0] vrbDo1;
