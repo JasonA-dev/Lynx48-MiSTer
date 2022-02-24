@@ -21,6 +21,8 @@ module lynx48
 	output wire [15:0]audio,
 	input  wire      ear,
 	
+	input wire    	 autostart_basic,
+
 	// roms, cartridges, etc
 	input	wire [7:0]	ioctl_data,
 	input	wire [24:0]	ioctl_addr,
@@ -114,6 +116,8 @@ cassette cassette
   .ioctl_dout(ioctl_data),
 
   .reset_n(reset),
+
+  .autostart_basic(autostart_basic),
 
   .tape_addr(tape_addr),
   .tape_wr(tape_wr),

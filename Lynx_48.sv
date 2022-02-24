@@ -146,15 +146,16 @@ assign VIDEO_ARY = status[5] ? 8'd9  : 8'd3;
 localparam CONF_STR = {
 	"Lynx48;;",
 	"-;",
-   "F1,TAP,Load Cassette;",
-   "-;",
+    "F1,TAP,Load Cassette;",
+    "-;",
 	"O5,Aspect ratio,4:3,16:9;",
-   "O12,Scandoubler Fx,None,HQ2x,CRT 25%,CRT 50%;",
+    "O12,Scandoubler Fx,None,HQ2x,CRT 25%,CRT 50%;",
 	"-;",
 	"O34,Machine,Lynx 48K,Lynx 96k,96k Scorpion;",
+	"O4,BASIC Autostart,Off,On;",	
 	"-;",
 	"OD,Joysticks Swap,No,Yes;",
-   "T0,Reset;",
+    "T0,Reset;",
 	"R0,Reset and close OSD;",
 	"V,v",`BUILD_DATE 
 };
@@ -180,6 +181,7 @@ wire [15:0]joystick_1;
 wire [5:0] joy_0 = status[13] ? joystick_1[5:0] : joystick_0[5:0];
 wire [5:0] joy_1 = status[13] ? joystick_0[5:0] : joystick_1[5:0];
 
+wire basic_autostart = status[4] ? 1'b1 : 1'b0;
 
 hps_io #(.STRLEN($size(CONF_STR)>>3), .PS2DIV(1103)) hps_io
 (
@@ -260,6 +262,8 @@ lynx48 lynx48
 	.audio    (AUDIO_L),
 	.ear      (ear    ),
 	
+	.autostart_basic (autostart_basic),
+
 	//	Removed offset addition
 	.ioctl_addr			(ioctl_addr			),
 	.ioctl_data			(ioctl_data			),

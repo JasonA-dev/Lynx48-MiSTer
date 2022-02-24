@@ -9,6 +9,8 @@ module cassette(
 
   input              reset_n,
 
+  input              autostart_basic,
+
   output reg [15:0]  tape_addr,
   output reg         tape_wr,
   output reg [7:0]   tape_dout,
@@ -89,7 +91,7 @@ always @(posedge clk)
                 begin
                     $display( "(state %x) filetype: %c",state,ioctl_dout);
                     fileType <= ioctl_dout;
-		    if (ioctl_dout!='hA5)   // A5 is to be ignored
+		            if (ioctl_dout!='hA5)   // A5 is to be ignored
                     begin
                           state <= SM_PROGRAMLO;
    
@@ -111,7 +113,7 @@ always @(posedge clk)
 
 		        if (fileType=='h42)             // Basic
                     begin
-		        loadPoint <= 'h694d;
+		                loadPoint <= 'h694d;
 		                //tape_addr <= loadPoint; 
                         previous_state <= state;
                     	state <= SM_PROGRAMCODE;  
@@ -152,15 +154,15 @@ always @(posedge clk)
                     //else 
                         loadPoint[15:8] <= ioctl_dout;
 
-	            if (fileType=='h4D || fileType=='h44)  // Machine Code, Data
+	                if (fileType=='h4D || fileType=='h44)  // Machine Code, Data
                     begin
                         previous_state <= state;
                     	state <= SM_PROGRAMCODE; 
                     end
-		    else begin 
+		            else begin 
                     	previous_state <= state;
                     	state <= SM_EXECPOINTLO; 
-		    end
+		            end
                 end
 
                 SM_EXECPOINTLO:
@@ -168,23 +170,23 @@ always @(posedge clk)
                     execPoint[7:0] <= ioctl_dout;    
                     previous_state <= state;                   
                     state <= SM_EXECPOINTHI;      
-		    tape_wr <= 'b0;  
+		            tape_wr <= 'b0;  
                 end
 
                 SM_EXECPOINTHI:
                 begin
                     execPoint[15:8] <= ioctl_dout;   
                     programLength <= programLength - 2;  
-		     //tape_addr <= loadPoint; 
+		            //tape_addr <= loadPoint; 
                     //execPoint <= 'h694d;
                     previous_state <= state;               
-		    if (fileType=='h4D)        // Machine Code
-		    begin
+		            if (fileType=='h4D)        // Machine Code
+		            begin
                       state <= SM_COMPLETED; 
                       tape_complete <= 1'b1;
 	              tape_addr <= {ioctl_dout,execPoint[7:0]} ; 
                     end
-	  	    else
+	  	            else
                        state <= SM_PROGRAMCODE;    
                 end
 
@@ -198,14 +200,17 @@ always @(posedge clk)
                     loadPoint <= loadPoint + 1;
 
                     if(programLength=='h0 && fileType!='h42) // 'h2
-			begin
+			        begin
                         previous_state <= state;
                         state <= SM_MYSTERYBYTE;  
-		        tape_wr <= 'b0;                     
+		                tape_wr <= 'b0;                     
                         
                     end
                     else if (programLength=='h0 && fileType=='h42)
                     begin
+                        if(autostart_basic)
+                            tape_complete <= 1'b1;
+
                         previous_state <= state;               
                         state <= SM_COMPLETED; 
                     end
@@ -223,15 +228,15 @@ always @(posedge clk)
                 begin
                     mysteryByte <= ioctl_dout;  
                     previous_state <= state;   
-		    if (fileType=='h4D)        // Machine Code
+		            if (fileType=='h4D)        // Machine Code
                     begin
                       state <=  SM_EXECPOINTLO;
                     end
 		    else
 			begin
-                      state <= SM_COMPLETED; 
+                    state <= SM_COMPLETED; 
                     tape_complete <= 1'b1;
-	            tape_addr <= execPoint; 
+	                tape_addr <= execPoint; 
 			end
                 end
 
@@ -239,7 +244,7 @@ always @(posedge clk)
                 begin
 		            tape_wr <= 'b0;  
                     tape_complete <= 1'b0;
-		   state <= SM_INIT;
+		            state <= SM_INIT;
                 end
 
             endcase
