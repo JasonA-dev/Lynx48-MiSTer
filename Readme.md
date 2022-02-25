@@ -43,7 +43,8 @@ There are two ways to load tape files (.tap):
 
 ### 1) using the MiSTer OSD menu
 At the moment, only BASIC programs, and machine code programs are supported. Data programs,
-and Level9 Computing programs are not supported yet.
+and Level9 Computing programs are not supported yet. Better compatibility is coming soon, but this will play a lot of games.If
+a game doesn't load in 48k mode, try 96k mode by switching the setting in the OSD.
 
 Using the OSD menu, machine code files will reset the core, and start automatically.
 If you are returned to the cursor prompt, it means the tape file is a BASIC program.
