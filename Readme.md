@@ -41,7 +41,7 @@ Up to 192 kB of RAM and 20 kB of ROM (16 kB on the smallest model) on a 16 bit a
 
 There are two ways to load tape files (.tap):
 
-### using the MiSTer OSD menu
+### 1) using the MiSTer OSD menu
 At the moment, only BASIC programs, and machine code programs are supported. Data programs,
 and Level9 Computing programs are not supported yet.
 
@@ -50,7 +50,7 @@ If you are returned to the cursor prompt, it means the tape file is a BASIC prog
 To run the loaded BASIC programs, simply type RUN, and press enter. The program should run.
 
 
-### load audio via audio in 
+### 2) load audio via audio in 
 
 This should be more compatible.
 
