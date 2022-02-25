@@ -4,7 +4,7 @@
 
 ## General description
 
-This is a Lynx48 running on Mister FPGA. it was ported from zx-uno (https://github.com/Kyp069/lynx) by rampa069.  Simulation support added by JimmyStones and alanswx, Tape Loading through the OSD by JasonCoombes-hr.
+This is a Lynx48 running on Mister FPGA. it was ported from zx-uno (https://github.com/Kyp069/lynx) by rampa069.  Simulation support added by JimmyStones and alanswx, Tape Loading through the OSD by JasonA.
 
 ## The Camputers Lynx Home Computer
 The Lynx was an 8-bit British home computer that was first released in early 1983 as a 48 kB model. The designer of the Lynx was John Shireff and several models were available with 48 kB, 96 kB or 128 kB RAM. It was possible reach 192 kB with RAM expansions on-board.
