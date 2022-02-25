@@ -4,7 +4,7 @@
 
 ## General description
 
-This is a Lynx48 running on Mister FPGA. it was ported from zx-uno (https://github.com/Kyp069/lynx).
+This is a Lynx48 running on Mister FPGA. it was ported from zx-uno (https://github.com/Kyp069/lynx) by rampa069.  Simulation support added by JimmyStones and alanswx, Tape Loading through the OSD by JasonCoombes-hr.
 
 ## The Camputers Lynx Home Computer
 The Lynx was an 8-bit British home computer that was first released in early 1983 as a 48 kB model. The designer of the Lynx was John Shireff and several models were available with 48 kB, 96 kB or 128 kB RAM. It was possible reach 192 kB with RAM expansions on-board.
@@ -41,15 +41,18 @@ Up to 192 kB of RAM and 20 kB of ROM (16 kB on the smallest model) on a 16 bit a
 
 There are two ways to load tape files (.tap):
 
-* using the MiSTer OSD menu
-* load audio via audio in 
-
+### using the MiSTer OSD menu
 At the moment, only BASIC programs, and machine code programs are supported. Data programs,
 and Level9 Computing programs are not supported yet.
 
 Using the OSD menu, machine code files will reset the core, and start automatically.
 If you are returned to the cursor prompt, it means the tape file is a BASIC program.
 To run the loaded BASIC programs, simply type RUN, and press enter. The program should run.
+
+
+### load audio via audio in 
+
+This should be more compatible.
 
 To convert .tap files to wav files (the same as you need to load on a real Lynx machine)
 * lynx2wav (Unix) (https://github.com/RW-FPGA-devel-Team/lynx2wav)
